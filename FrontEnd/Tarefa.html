@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Tarefas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
+    <style>
+        :root{
+            --cor1: #a9d3ff;
+            --cor2: #00497a;
+            --cor3: #c6e2ff;
+            --cor4: #ffffff;
+        }
+        
+        body {
+            background: var(--cor1);
+            font-family: 'Patrick Hand', cursive;
+            margin: 2rem;
+            color: var(--cor2);
+        }
+
+        .container {
+            background: var(--cor3);
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 480px;
+            margin: auto;
+        }
+
+        .gerenciador {
+            background: var(--cor4);
+            border-radius: 20px;
+            padding: 20px;
+            border: 2px solid var(--cor2);
+            max-width: 380px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: normal;
+        }
+
+        .btn-linha {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 2px solid var(--cor2);
+            background: #e0f0ff;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #b0d1ff;
+        }
+
+        .tarefas-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .tarefa {
+            border: 2px solid var(--cor2);
+            border-radius: 15px;
+            padding: 10px;
+            text-align: center;
+            background: #eaf6ff;
+            line-height: 1.4;
+            position: relative;
+        }
+
+        i{
+            color: var(--cor2);
+        }
+        #mensagem {
+            text-align: center;
+        }
+
+        /* Pop-Up*/
+        .popup {
+            background: #a9d3ff;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 300px;
+            margin: 30px auto 0;
+            border: 2px solid #00497a;
+        }
+
+        .popup label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        .popup input,
+        .popup textarea,
+        .popup select {
+            width: 100%;
+            border-radius: 8px;
+            border: 1.5px solid #00497a;
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1rem;
+            margin-top: 6px;
+            resize: none;
+        }
+
+        .popup textarea {
+            height: 80px;
+        }
+
+        .popup-titulo {
+            font-weight: normal;
+            margin-bottom: 10px;
+        }
+        .atualizar, .adicionar{
+            border: none;
+        }
+        .popBTN {
+            font-family: 'Patrick Hand', cursive;
+            width: fit-content;
+            height: 40px;
+            background: var(--cor4);
+            color: var(--cor2);
+            border: 2px solid var(--cor2);
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 0 15px;
+        }
+
+        .popBTN:hover {
+            background: var(--cor1);
+        }
+        .botoes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .popup {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .popup.pop {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .tarefa:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        
+        #btnTarefa {
+            bottom: 8px;
+            right: 8px;
+            border-radius: 5px;
+            border: 2px solid var(--cor2);
+            background: #e0f0ff;
+            cursor: pointer;
+            opacity: 0;
+            margin-right: 5px;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #btnTarefa:hover {
+            background: #b0d1ff;
+        }
+
+        
+        .tarefa:hover #btnTarefa {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="gerenciador">
+            <h2>Gerenciador de Tarefas</h2>
+
+            <div class="btn-linha">
+                <button class="btn" title="Adicionar" onclick="abrirPopup('popupAdicionar')"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <div id="mensagem">Nenhuma tarefa encontrada.</div>
+
+            <div class="tarefas-grid" id="tarefas">
+                <!-- Tarefas aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Pop-up Adicionar -->
+     <div id="popupAdicionar" class="popup" aria-label="Adicionar Tarefa" popover>
+        <form id="adicionarFORM" class="adicionar">
+            <div class="popup-titulo"><h2>Adicionar Tarefa:</h2></div>
+
+            <label for="tituloAdicionar">Título :</label>
+            <input type="text" id="tituloAdicionar" name="titulo"/>
+
+            <label for="descricaoAdicionar">Descrição :</label>
+            <textarea id="descricaoAdicionar" name="descricao" required></textarea>
+
+            <label for="status">Status:</label>
+            <select id="statusAdicionar" name="status">
+                <option value="" disabled selected>Selecione o status</option>
+                <option value="PENDENTE">Pendente</option>
+                <option value="CANCELADO">Cancelado</option>
+                <option value="CONCLUIDO">Concluído</option>
+            </select>
+
+            <div class="botoes">
+                <button type="button" class="popBTN" id="addBTN">Adicionar</button>
+                <button type="button" class="popBTN" popovertarget="popupAdicionar" onclick="fecharPopup('popupAdicionar')">
+                    Cancelar
+                </button>
+            </div>
+        </fieldset>
+    </div>
+
+    <!-- Pop-up Atualizar -->
+    <div id="popupAtualizar" class="popup" aria-label="Atualizar Tarefa" popover>
+        <fieldset class="atualizar">
+            <div class="popup-titulo"><h2>Atualizar Tarefa:</h2></div>
+
+            <label for="tituloAtualizar">Título :</label>
+            <input type="text" id="tituloAtualizar" name="titulo" />
+
+            <label for="descricaoAtualizar">Descrição :</label>
+            <textarea id="descricaoAtualizar" name="descricao"></textarea>
+
+            <label for="status">Status:</label>
+            <select id="statusAtualizar" name="status" required>
+                <option value="" disabled selected>Selecione o status</option>
+                <option value="PENDENTE">Pendente</option>
+                <option value="CANCELADO">Cancelado</option>
+                <option value="CONCLUIDO">Concluído</option>
+            </select>
+
+            <div class="botoes">
+                <button type="button" class="popBTN" id="atualizarBTN">Atualizar</button>
+                <button type="button" class="popBTN" popovertarget="popupAtualizar" onclick="fecharPopup('popupAtualizar')">
+                    Cancelar
+                </button>
+            </div>
+        </fieldset>
+    </div>
+    </div>
+    <script src="Tarefa.js"></script>
+
+</body>
+</html>
